@@ -135,6 +135,10 @@ class MigrateMetadataService extends AbstractService {
 		$this->isInstalledFileMetadata = ExtensionManagementUtility::isLoaded('filemetadata');
 		$this->isInstalledMedia = ExtensionManagementUtility::isLoaded('media');
 
+		// keep track of duplicate metadata to report to user
+		$processedFileIds = array();
+		$duplicateMetadataFileIds = array();
+
 		while ($record = $this->database->sql_fetch_assoc($res)) {
 			$this->database->exec_UPDATEquery(
 				'sys_file_metadata',
@@ -150,8 +154,26 @@ class MigrateMetadataService extends AbstractService {
 			$this->controller->message(number_format(100 * ($counter / $total), 1) . '% of ' . $total . ' id: ' . $record['file_uid']);
 			$this->amountOfMigratedRecords++;
 			$counter++;
+
+			// remember which sys_file records got data from which tx_dam records
+			$processedFileIds[$record['file_uid']]['damIds'][] = $record['dam_uid'];
+			$processedFileIds[$record['file_uid']]['path'] = rtrim($record['file_path'], '/').'/'.$record['file_name'];
+			if (count($processedFileIds[$record['file_uid']]['damIds']) > 1) {
+				// remember any duplicates we encountered
+				$duplicateMetadataFileIds[$record['file_uid']] = '';
+			}
 		}
 		$this->database->sql_free_result($res);
+
+		// warn user about duplicate metadata
+		if (count($duplicateMetadataFileIds) > 0) {
+			$msg = PHP_EOL.'Multiple DAM file metadata has been found for the same files. You should verify metadata for the following files manually:'.PHP_EOL;
+			foreach ($duplicateMetadataFileIds as $fileId => $_a) {
+				$info = $processedFileIds[$fileId];
+				$msg .= ' sys_file uid '.$fileId.', tx_dam uids '.implode(', ', $info['damIds']).', path '.$info['path'].PHP_EOL;
+			}
+			$this->controller->warningMessage($msg);
+		}
 
 		return $this->getResultMessage();
 	}
