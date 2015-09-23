@@ -163,9 +163,9 @@ class MigrateMetadataService extends AbstractService {
 	 */
 	protected function execSelectMigratedSysFilesQuery() {
 		return $this->database->exec_SELECTquery(
-			'DISTINCT m.uid AS metadata_uid, f.uid as file_uid, f._migrateddamuid AS dam_uid, d.*',
+			'DISTINCT m.uid AS metadata_uid, f.uid as file_uid, d.uid AS dam_uid, d.*',
 			'sys_file f, sys_file_metadata m, tx_dam d',
-			'm.file=f.uid AND f._migrateddamuid=d.uid AND f._migrateddamuid > 0'
+			'm.file=f.uid AND d._migratedfaluid=f.uid'
 		);
 	}
 

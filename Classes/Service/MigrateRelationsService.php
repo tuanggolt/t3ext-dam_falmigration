@@ -315,9 +315,9 @@ class MigrateRelationsService extends AbstractService {
     }
 
 	/**
-	 * After a migration of tx_dam -> sys_file the col _migrateddamuid is
-	 * filled with dam uid Now we can search in dam relations for dam records
-	 * which have already been migrated to sys_file
+	 * After a migration of tx_dam -> sys_file the col _migratedfaluid is
+	 * filled with FAL uid. Now we can search in DAM relations for DAM records
+	 * which have already been migrated to sys_file.
 	 *
 	 * @return \mysqli_result
 	 */
@@ -339,8 +339,10 @@ class MigrateRelationsService extends AbstractService {
 		return $this->database->exec_SELECTquery(
 			$selectFields,
 			'tx_dam_mm_ref
+			JOIN tx_dam ON
+				tx_dam.uid = tx_dam_mm_ref.uid_local
 			JOIN sys_file ON
-				sys_file._migrateddamuid = tx_dam_mm_ref.uid_local
+				sys_file.uid = tx_dam._migratedfaluid
 			JOIN sys_file_metadata ON
 				sys_file.uid = sys_file_metadata.file
 				',

@@ -147,7 +147,7 @@ dam_falmigration:dammigration:migratedamrecords
 
 **Migrates all DAM records to FAL.**
 
-A database field "_migrateddamuid" connects each FAL record to the original DAM record.
+A database field "_migratedfaluid" connects each original DAM record to the matching FAL record.
 
 
 

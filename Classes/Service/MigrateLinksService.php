@@ -188,9 +188,9 @@ class MigrateLinksService extends AbstractService {
 
 		// query database
 		$res = $this->database->exec_SELECTgetSingleRow(
-			'uid',
-			'sys_file',
-			'`_migrateddamuid` = ' . $this->database->fullQuoteStr((int)$mediaUID, 'sys_file', false)
+			'_migratedfaluid AS uid',
+			'tx_dam',
+			'tx_dam.uid = ' . $this->database->fullQuoteStr((int)$mediaUID, 'tx_dam', false)
 		);
 
 		// use negative value if not found

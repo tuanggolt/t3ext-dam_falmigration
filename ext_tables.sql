@@ -1,12 +1,4 @@
 #
-# Table structure for table 'sys_file'
-#
-CREATE TABLE sys_file (
-	_migrateddamuid int(11) unsigned DEFAULT '0' NOT NULL,
-	KEY migratedRecords (_migrateddamuid)
-);
-
-#
 # Table structure for table 'sys_file_collection'
 #
 CREATE TABLE sys_file_collection (
@@ -26,6 +18,8 @@ CREATE TABLE sys_category (
 #
 CREATE TABLE tx_dam (
 	_missingfile tinyint(4) unsigned DEFAULT '0' NOT NULL,
+	_migratedfaluid int(11) unsigned DEFAULT '0' NOT NULL,
+	KEY migratedRecords (_migratedfaluid),
 	KEY deletedRecords (uid, deleted),
 	KEY missingFiles (_missingfile)
 );

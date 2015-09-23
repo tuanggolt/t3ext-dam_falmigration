@@ -59,9 +59,9 @@ class MigrateRteMediaTagService extends AbstractService {
 
 		/** @var PreparedStatement $getSysFileUidStatement */
 		$getSysFileUidStatement = $this->database->prepare_SELECTquery(
-			'uid',
-			'sys_file',
-			'_migrateddamuid = :migrateddamuid'
+			'_migratedfaluid AS uid',
+			'tx_dam',
+			'tx_dam.uid = :migrateddamuid AND _migratedfaluid > 0'
 		);
 		foreach ($records as $rec) {
 			$originalContent = $rec[$field];

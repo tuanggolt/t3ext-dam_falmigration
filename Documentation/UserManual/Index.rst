@@ -34,9 +34,9 @@ The available migration tasks can be found under the *extbase* cliKey:
 	                                           "_migrated/dam" is created and files
 	                                           are copied and indexed.
 	  dammigration:migratedamrecords           Migrates all DAM records to FAL. A
-	                                           DB field "_migrateddamuid" connects
-	                                           each FAL record to the original DAM
-	                                           record.
+                                               DB field "_migratedfaluid" connects
+                                               each original DAM record to the
+                                               matching FAL record.
 	  dammigration:migratedammetadata          Migrates DAM metadata to FAL
 	                                           metadata. Searches for all migrated
 	                                           sys_file records that do not have any

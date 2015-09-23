@@ -30,7 +30,7 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 /**
  * Service to Migrate Records
  * Finds all DAM records that have not been migrated yet
- * and adds a DB field "_migrateddamuid" to each FAL record
+ * and adds a DB field "_migratedfaluid" to each DAM record
  * to connect the DAM and FAL DB records
  *
  * currently it only works for files within the fileadmin
@@ -165,7 +165,7 @@ class MigrateService extends AbstractService {
 	public function countNotMigratedDamRecordsQuery() {
 		$row = $this->database->exec_SELECTgetSingleRow(
 			'COUNT(*) as total',
-			'tx_dam LEFT JOIN sys_file ON (tx_dam.uid = sys_file._migrateddamuid)',
+			'tx_dam LEFT JOIN sys_file ON (tx_dam._migratedfaluid = sys_file.uid)',
 			'sys_file.uid IS NULL AND
 			 tx_dam.deleted = 0 AND
 			 tx_dam.file_path LIKE "' . $this->storageBasePath . '%" AND
@@ -182,7 +182,7 @@ class MigrateService extends AbstractService {
 	protected function execSelectNotMigratedDamRecordsQuery() {
 		return $this->database->exec_SELECTquery(
 			'tx_dam.*',
-			'tx_dam LEFT JOIN sys_file ON (tx_dam.uid = sys_file._migrateddamuid)',
+			'tx_dam LEFT JOIN sys_file ON (tx_dam._migratedfaluid = sys_file.uid)',
 			'sys_file.uid IS NULL AND
 			 tx_dam.deleted = 0 AND
 			 tx_dam.file_path LIKE "' . $this->storageBasePath . '%" AND
@@ -228,11 +228,11 @@ class MigrateService extends AbstractService {
 				$this->createArrayForUpdateInsertSysFileRecord($damRecord)
 			);
 
-			// add the migrated uid of the DAM record to the FAL record
+			// add the uid of the FAL record to the original DAM record
 			$this->database->exec_UPDATEquery(
-				'sys_file',
-				'uid = ' . $fileObject->getUid(),
-				array('_migrateddamuid' => $damRecord['uid'])
+				'tx_dam',
+				'uid = ' . $damRecord['uid'],
+				array('_migratedfaluid' => $fileObject->getUid())
 			);
 		}
 	}

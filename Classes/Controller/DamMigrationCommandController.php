@@ -52,7 +52,7 @@ class DamMigrationCommandController extends AbstractCommandController {
 
 	/**
 	 * Migrates all DAM records to FAL.
-	 * A database field "_migrateddamuid" connects each FAL record to the original DAM record.
+	 * A database field "_migratedfaluid" connects each original DAM record to the matching FAL record.
 	 *
 	 * @param int $storageUid The UID of the storage (default: 1 Do not modify if you are unsure.)
 	 * @param int $recordLimit The amount of records to process in a single run. You can set this value if you have memory constraints.
@@ -373,9 +373,9 @@ class DamMigrationCommandController extends AbstractCommandController {
 				}
 				else {
 					$newFalRecords = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-						'uid, _migrateddamuid',
-						'sys_file',
-						'_migrateddamuid IN (' . $plugin['tx_damdownloadlist_records'] . ')'
+						'_migratedfaluid AS uid',
+						'tx_dam',
+						'tx_dam.uid IN (' . $plugin['tx_damdownloadlist_records'] . ') AND _migratedfaluid > 0'
 					);
 
 					// update ctype for dam_frontend_pi2 plugin

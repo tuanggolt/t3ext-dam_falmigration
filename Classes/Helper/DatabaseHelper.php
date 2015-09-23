@@ -52,9 +52,9 @@ class DatabaseHelper {
 	 */
 	public function getAllMigratedFalRecords() {
 		return $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-			'uid, _migrateddamuid AS damuid',
-			'sys_file',
-			'_migrateddamuid>0',
+			'sys_file.uid AS uid, tx_dam.uid AS damuid',
+			'tx_dam JOIN sys_file ON sys_file._migratedfaluid = tx_dam.uid',
+			'', // where
 			'',	// group by
 			'', // order by
 			'', // limit

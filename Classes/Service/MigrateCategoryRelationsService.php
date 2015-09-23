@@ -100,8 +100,8 @@ class MigrateCategoryRelationsService extends AbstractService {
 	protected function getCategoryRelationsWhereSysCategoryExists() {
 		$rows = $this->database->exec_SELECTgetRows(
 			'MM.*, SM.uid as sys_metadata_uid, SC.uid as sys_category_uid',
-			'tx_dam_mm_cat MM, sys_file SF, sys_category SC, sys_file_metadata SM',
-			'SC._migrateddamcatuid = MM.uid_foreign AND SF._migrateddamuid = MM.uid_local AND SM.file = SF.uid'
+			'tx_dam_mm_cat MM, tx_dam D, sys_category SC, sys_file_metadata SM',
+			'SC._migrateddamcatuid = MM.uid_foreign AND D.uid = MM.uid_local AND SM.file = D._migratedfaluid'
 		);
 		if ($rows === NULL) {
 			throw new \Exception('SQL-Error in getCategoryRelationsWhereSysCategoryExists()', 1382968725);
